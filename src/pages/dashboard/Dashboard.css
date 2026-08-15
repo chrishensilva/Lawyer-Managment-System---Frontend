@@ -1,0 +1,289 @@
+/* ========================================
+   DASHBOARD LAYOUT - Fully Responsive
+   ======================================== */
+
+.dashboard-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Top Navigation Bar --- */
+.top-nav {
+  height: 4rem;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  z-index: 30;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0; /* allow truncation */
+}
+
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.menu-toggle:hover {
+  background: var(--bg-main);
+}
+
+.nav-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* --- Body Layout --- */
+.body-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.main-body {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  height: calc(100vh - 4rem);
+  min-width: 0; /* prevents flex overflow */
+}
+
+/* --- Stat Cards Grid --- */
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.dash-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dash-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: transparent;
+}
+
+.dash-card h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: var(--text-main);
+  z-index: 1;
+}
+
+.dash-card p,
+.dash-card span {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  z-index: 1;
+  margin: 0;
+}
+
+.card-icon {
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Card Colour Variants */
+.dash-card.blue  { background: linear-gradient(135deg, var(--bg-surface) 0%, #eff6ff 100%); border-left: 4px solid var(--primary); }
+.dash-card.blue h3  { color: var(--primary); }
+.dash-card.green { background: linear-gradient(135deg, var(--bg-surface) 0%, #f0fdf4 100%); border-left: 4px solid var(--success); }
+.dash-card.green h3 { color: var(--success); }
+.dash-card.yellow{ background: linear-gradient(135deg, var(--bg-surface) 0%, #fffbeb 100%); border-left: 4px solid var(--warning); }
+.dash-card.yellow h3{ color: var(--warning); }
+.dash-card.red   { background: linear-gradient(135deg, var(--bg-surface) 0%, #fef2f2 100%); border-left: 4px solid var(--danger); }
+.dash-card.red h3   { color: var(--danger); }
+
+/* --- Bottom Section (Chart + Todo) --- */
+.bottom-section {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.chart-container {
+  min-height: 350px;
+  width: 100%;
+  min-width: 0; /* Important for Recharts in Grid/Flex */
+}
+
+.graph-box,
+.todo-box {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  height: 400px;
+}
+
+.graph-box:hover,
+.todo-box:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.graph-box h3,
+.todo-box h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+}
+
+.graph-placeholder {
+  height: 300px;
+  background-color: var(--bg-main);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Tablet & below — show hamburger, mobile sidebar */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .main-body {
+    padding: 1rem;
+  }
+
+  .nav-title {
+    font-size: 0.95rem;
+  }
+
+  .card-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .dash-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .bottom-section {
+    grid-template-columns: 1fr;
+  }
+
+  .graph-box,
+  .todo-box {
+    height: 320px;
+  }
+
+  .chart-container {
+    min-height: 280px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .main-body {
+    padding: 0.75rem;
+  }
+
+  .card-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .dash-card {
+    padding: 1rem;
+  }
+
+  .dash-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .card-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .graph-box,
+  .todo-box {
+    height: auto;
+    min-height: 280px;
+  }
+}
+
+/* Large screens — sidebar always visible */
+@media (min-width: 769px) {
+  .card-row {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+/* Overlay when mobile sidebar is open */
+@media (max-width: 768px) {
+  .dashboard-container.sidebar-open::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 35;
+  }
+}

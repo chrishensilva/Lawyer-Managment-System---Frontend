@@ -1,0 +1,193 @@
+/* ========================================
+   TABLE & SHARED LIST STYLES
+   Mobile-Responsive
+   ======================================== */
+
+/* Scrollable wrapper for wide tables */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9rem;
+  background: var(--bg-surface);
+  min-width: 600px; /* ensures scroll kicks in before columns collapse */
+}
+
+.styled-table th {
+  background: #0a62ee;
+  color: white;
+  text-align: left;
+  font-weight: 600;
+  padding: 0.875rem 1rem;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  border-bottom: none;
+  white-space: nowrap;
+}
+
+.styled-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.styled-table tr:last-child td {
+  border-bottom: none;
+}
+
+.styled-table tr:hover td {
+  background-color: var(--bg-main);
+}
+
+/* --- Action Buttons --- */
+.delete-btn {
+  color: var(--danger);
+  background: transparent;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.delete-btn:hover {
+  background: var(--danger);
+  color: white;
+  border-color: var(--danger);
+}
+
+/* --- Messages --- */
+.success-msg {
+  color: var(--success);
+  background: #ecfdf5;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  margin: 1rem auto;
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid #a7f3d0;
+}
+
+.error-msg {
+  color: var(--danger);
+  background: #fef2f2;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  margin: 1rem auto;
+  text-align: center;
+  font-weight: 500;
+  border: 1px solid #fecaca;
+}
+
+.no-data {
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 2rem;
+  font-style: italic;
+}
+
+/* --- General Buttons --- */
+.btn1 {
+  padding: 0.65rem 1.25rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.btn1:hover {
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-md);
+}
+
+/* --- Search Bar --- */
+.searchbar {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.9rem;
+  width: 280px;
+  max-width: 100%;
+  transition: all var(--transition-fast);
+  background: var(--bg-surface);
+}
+
+.searchbar:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+/* --- Header Row (title + search/actions) --- */
+.btnset1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* --- Showdata wrapper (used by many pages) --- */
+.showdata {
+  width: 100%;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  .styled-table {
+    font-size: 0.82rem;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .btnset1 {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchbar {
+    width: 100%;
+  }
+
+  .btn1 {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .styled-table {
+    font-size: 0.78rem;
+  }
+}
