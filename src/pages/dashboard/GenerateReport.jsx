@@ -136,20 +136,20 @@ function GenerateReport() {
                         ))}
                     </select>
                     <button className="btn1" onClick={loadReportData} disabled={loading}>
-                        🔄 {loading ? "Refreshing..." : "Refresh Data"}
+                        {loading ? "Refreshing..." : "Refresh Data"}
                     </button>
                     <button className="btn1" onClick={handlePrint} disabled={!hasPermission('report')}>
-                        🖨️ Print Report
+                        Print Report
                     </button>
                     <button className="btn1" onClick={handleExportCSV} disabled={!hasPermission('report')}>
-                        📊 Export CSV
+                        Export CSV
                     </button>
                 </div>
             </div>
 
             {error && (
                 <div className="error-msg">
-                    ⚠️ Error: {error}. Please check your database connection.
+                    Error: {error}. Please check your database connection.
                 </div>
             )}
 

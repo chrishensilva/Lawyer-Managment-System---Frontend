@@ -1,55 +1,76 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Shield, Sparkles, Heart } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div className="footer-grid">
+    <footer className="cp-footer">
+      <div className="cp-container">
+        <div className="cp-footer-top">
           
-          <div className="footer-column">
-            <h4 className="footer-heading">Product</h4>
-            <div className="footer-links">
-              <Link to="/features">Features</Link>
-              <Link to="/pricing">Pricing</Link>
-              <Link to="/security">Security</Link>
-              <Link to="#">Changelog / Roadmap</Link>
+          {/* Brand Info */}
+          <div className="cp-footer-brand-col">
+            <Link to="/" className="cp-brand">
+              <div className="cp-logo-icon">
+                <span className="cp-logo-letter">C</span>
+              </div>
+              <span className="cp-brand-name">CourtPilot</span>
+            </Link>
+            <p className="cp-footer-desc">
+              The modern legal SaaS platform that streamlines case management, document organization, and attorney workflows — all in one place.
+            </p>
+            <div className="cp-footer-badge">
+              <Shield size={14} className="cp-shield-icon" />
+              <span>SOC2 Type II & HIPAA Compliant Security</span>
             </div>
           </div>
 
-          <div className="footer-column">
-            <h4 className="footer-heading">Resources</h4>
-            <div className="footer-links">
-              <Link to="#">Documentation</Link>
-              <Link to="#">FAQ</Link>
-              <Link to="#">Support</Link>
+          {/* Links Column 1: Product */}
+          <div className="cp-footer-links-col">
+            <h4 className="cp-footer-col-title">Product</h4>
+            <div className="cp-footer-links">
+              <Link to="/features">FlowMaster (Cases)</Link>
+              <Link to="/features">InsightPro (Analytics)</Link>
+              <Link to="/features">TeamSync (Attorneys)</Link>
+              <Link to="/pricing">Pricing Plans</Link>
+              <Link to="/register">Free Trial</Link>
             </div>
           </div>
 
-          <div className="footer-column">
-            <h4 className="footer-heading">Legal</h4>
-            <div className="footer-links">
-              <Link to="#">Privacy Policy</Link>
-              <Link to="#">Terms of Service</Link>
-              <Link to="#">Cookie Policy</Link>
+          {/* Links Column 2: Solutions */}
+          <div className="cp-footer-links-col">
+            <h4 className="cp-footer-col-title">Solutions</h4>
+            <div className="cp-footer-links">
+              <Link to="/features">Litigation Chambers</Link>
+              <Link to="/features">Corporate Legal</Link>
+              <Link to="/features">Solo Practitioners</Link>
+              <Link to="/security">Security Architecture</Link>
+              <Link to="/contact">Request Demo</Link>
             </div>
           </div>
 
-          <div className="footer-column">
-            <h4 className="footer-heading">Company</h4>
-            <div className="footer-links">
-              <Link to="#">About</Link>
-              <Link to="/contact">Contact</Link>
-              <Link to="#">GitHub</Link>
+          {/* Links Column 3: Company */}
+          <div className="cp-footer-links-col">
+            <h4 className="cp-footer-col-title">Company</h4>
+            <div className="cp-footer-links">
+              <Link to="/contact">About CourtPilot</Link>
+              <Link to="/contact">Customer Support</Link>
+              <Link to="/contact">Contact Sales</Link>
+              <Link to="/security">Privacy Policy</Link>
+              <Link to="/security">Terms of Service</Link>
             </div>
           </div>
 
         </div>
-        
-        <div className="footer-bottom">
-          <p className="footer-tagline">
-            ⚖️ Court Case Management System — © 2026 ChrishenSilva. All rights reserved.
+
+        {/* Footer Bottom Line */}
+        <div className="cp-footer-bottom">
+          <p className="cp-copyright">
+            © {new Date().getFullYear()} CourtPilot Technologies Inc. All rights reserved.
           </p>
+          <div className="cp-legal-links">
+            <span>Built for Modern Legal Practices</span>
+          </div>
         </div>
       </div>
     </footer>

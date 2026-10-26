@@ -1,40 +1,79 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, HelpCircle, Plus, Minus } from 'lucide-react';
 
 const FAQ = () => {
   const faqs = [
-    { question: "Is my data secure?", answer: "Absolutely. All data is isolated per organization using multi-tenant architecture. Passwords are bcrypt-hashed, and all API calls require a valid JWT token over HTTPS." },
-    { question: "Can multiple team members use the system simultaneously?", answer: "Yes. The admin can create editor accounts and assign specific permissions to each. All users work in real-time from the same shared database." },
-    { question: "How does email notification work?", answer: "You configure your own Gmail account in the 'My Account' section using a Gmail App Password. The system then sends emails on your behalf when a lawyer is assigned to a case." },
-    { question: "Is there a mobile version?", answer: "The web application is fully responsive and works on mobile browsers. A dedicated mobile app is on the roadmap." },
-    { question: "Can I export my data?", answer: "Yes. From the Generate Report page, you can export a full CSV file of all case data at any time." },
-    { question: "What is the difference between Admin and Editor?", answer: "Admin has full access to all features including billing, SMTP settings, adding editors, and activity logs. Editors receive a custom subset of permissions configured by the Admin." }
+    { 
+      question: "Is client and court case data secure?", 
+      answer: "Yes, completely. Data is isolated per law firm account. Documents are encrypted at rest and in transit, user passwords utilize salted bcrypt hashing, and all sessions are protected by authenticated JWT over TLS." 
+    },
+    { 
+      question: "Can multiple lawyers & clerks collaborate simultaneously?", 
+      answer: "Yes. Administrators can create unlimited sub-accounts (editors) with granular role-based permissions (e.g. view cases, edit hearings, upload documents). All actions sync in real-time." 
+    },
+    { 
+      question: "How does automated court date and hearing notification work?", 
+      answer: "You can connect your firm's email or custom SMTP directly in your Account settings. CourtPilot automatically dispatches hearing reminders, assignment notices, and calendar alerts." 
+    },
+    { 
+      question: "Can I export case summaries & reports to PDF or Excel?", 
+      answer: "Yes. With a single click from the Generate Report dashboard, you can filter by case type, date range, or lawyer, and download branded PDF reports or CSV datasets." 
+    },
+    { 
+      question: "How easy is it to migrate existing cases from spreadsheets?", 
+      answer: "Extremely simple. You can register cases in seconds or use our quick bulk importer to migrate your clients, case numbers, and lawyer rosters." 
+    }
   ];
 
-  const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState(0);
 
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index);
-  }
+  };
 
   return (
-    <section className="section">
-      <div className="container">
-        <h2 className="section-title">Frequently Asked Questions</h2>
+    <section className="cp-faq-section" id="faq">
+      <div className="cp-container">
         
-        <div className="faq-container">
-          {faqs.map((faq, index) => (
-            <div className="faq-item" key={index}>
-              <div className="faq-question" onClick={() => toggleFAQ(index)}>
-                {faq.question}
-                {openIndex === index ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-              </div>
-              {openIndex === index && (
-                <div className="faq-answer">{faq.answer}</div>
-              )}
-            </div>
-          ))}
+        <div className="cp-section-badge">
+          <HelpCircle size={13} className="cp-badge-icon" />
+          <span>COMMON QUESTIONS</span>
         </div>
+
+        <div className="cp-section-header-center">
+          <h2 className="cp-section-title">
+            Frequently Asked <span className="cp-purple-gradient-text">Questions</span>
+          </h2>
+          <p className="cp-section-subtitle">
+            Everything you need to know about getting started with CourtPilot.
+          </p>
+        </div>
+
+        <div className="cp-faq-list">
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <div 
+                className={`cp-faq-card ${isOpen ? 'open' : ''}`} 
+                key={index}
+                onClick={() => toggleFAQ(index)}
+              >
+                <div className="cp-faq-header">
+                  <h3 className="cp-faq-question">{faq.question}</h3>
+                  <div className="cp-faq-toggle-btn">
+                    {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                  </div>
+                </div>
+                {isOpen && (
+                  <div className="cp-faq-body">
+                    <p>{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
       </div>
     </section>
   );
