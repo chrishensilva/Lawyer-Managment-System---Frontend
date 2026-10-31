@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TableSkeleton from "../../components/shared/TableSkeleton";
 import API_BASE_URL from "../../config";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
@@ -10,6 +11,8 @@ function UserPage() {
   const { toast, confirm } = useToast();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -22,25 +25,33 @@ function UserPage() {
 
   // Load users
   const loadUsers = () => {
+    setLoading(true);
+    setLoadError("");
     fetch(`${API_BASE_URL}/getUsers?search=${search}&page=${page}&limit=${limit}`, {
       credentials: 'include',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load cases (${res.status})`);
+        return res.json();
+      })
       .then((data) => {
         if (data && Array.isArray(data.data)) {
           setUsers(data.data);
           setTotalPages(data.pagination.totalPages);
         } else {
           setUsers([]);
+          setLoadError("Unable to load case records.");
         }
       })
       .catch((err) => {
         console.error(err);
         setUsers([]);
-      });
+        setLoadError("Unable to load case records.");
+      })
+      .finally(() => setLoading(false));
   };
 
   // Edit case — navigate to AddUser form with row data
@@ -215,7 +226,7 @@ function UserPage() {
 
         {/* Table */}
         <div className="table-container">
-          <table className="styled-table" data-aos="fade-up">
+          <table className="styled-table" data-aos="fade-up" aria-busy={loading}>
             <thead>
               <tr>
                 <th>Name</th>
@@ -235,7 +246,7 @@ function UserPage() {
             </thead>
 
             <tbody>
-              {Array.isArray(users) && users.map((u, index) => (
+              {loading ? <TableSkeleton columns={13} /> : Array.isArray(users) && users.map((u, index) => (
                 <tr key={u.nic} data-aos="fade-up" data-aos-delay={index * 80} style={{ backgroundColor: getRowColor(u.status) }}>
                   <td>{u.name}</td>
                   <td>{u.nic}</td>
@@ -295,7 +306,10 @@ function UserPage() {
           </table>
         </div>
 
-        {users.length === 0 && <p className="no-data">No records found.</p>}
+        {loadError && <p className="error-msg">{loadError}</p>}
+        {!loading && !loadError && users.length === 0 && (
+          <p className="no-data">No records found.</p>
+        )}
 
         {showDocModal && (
           <div className="modal-overlay">

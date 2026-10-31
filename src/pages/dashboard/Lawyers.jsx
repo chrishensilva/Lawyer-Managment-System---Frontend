@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Table.css";
+import TableSkeleton from "../../components/shared/TableSkeleton";
 import API_BASE_URL from "../../config";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
 
 function Lawyers() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -17,25 +20,33 @@ function Lawyers() {
 
   // Load data
   const loadData = () => {
+    setLoading(true);
+    setLoadError("");
     fetch(`${API_BASE_URL}/getLawyers?search=${search}&page=${page}&limit=${limit}`, {
       credentials: 'include',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load lawyers (${res.status})`);
+        return res.json();
+      })
       .then((data) => {
         if (data && Array.isArray(data.data)) {
           setData(data.data);
           setTotalPages(data.pagination.totalPages);
         } else {
           setData([]);
+          setLoadError("Unable to load lawyer records.");
         }
       })
       .catch((err) => {
         console.error(err);
         setData([]);
-      });
+        setLoadError("Unable to load lawyer records.");
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -79,23 +90,25 @@ function Lawyers() {
 
   return (
     <div className="lawyers-page fade-in">
-      <h2>Lawyers</h2>
-
-      {/* Search */}
-      <input
-        className="searchbar"
-        type="text"
-        placeholder="Enter NIC"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <button className="btn1" onClick={loadData}>
-        Search
-      </button>
+      <div className="lawyers-header">
+        <h2 className="page-heading">Lawyers</h2>
+        <div className="lawyers-search">
+          <input
+            className="searchbar"
+            type="text"
+            placeholder="Enter NIC"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button className="btn1" onClick={loadData}>
+            Search
+          </button>
+        </div>
+      </div>
 
       {/* Table */}
       <div className="table-container">
-        <table className="styled-table">
+        <table className="styled-table" aria-busy={loading}>
           <thead>
             <tr>
               <th>Name</th>
@@ -107,34 +120,39 @@ function Lawyers() {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(data) && data.map((row) => (
-              <tr key={row.nic}>
-                <td>{row.name}</td>
-                <td>{row.nic}</td>
-                <td>{row.email}</td>
-                <td>{row.contact}</td>
-                <td>{row.note}</td>
-                <td style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                  <button
-                    className="btn-small"
-                    onClick={() => editLawyer(row)}
-                    style={{ background: "#0d6efd", color: "#fff" }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteLawyer(row.nic)}
-                    style={{ opacity: user?.role === 'admin' ? 1 : 0.5, cursor: user?.role === 'admin' ? 'pointer' : 'not-allowed' }}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {loading ? <TableSkeleton columns={6} /> : Array.isArray(data) && data.map((row) => (
+                <tr key={row.nic}>
+                  <td>{row.name}</td>
+                  <td>{row.nic}</td>
+                  <td>{row.email}</td>
+                  <td>{row.contact}</td>
+                  <td>{row.note}</td>
+                  <td style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    <button
+                      className="btn-small"
+                      onClick={() => editLawyer(row)}
+                      style={{ background: "#0d6efd", color: "#fff" }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => deleteLawyer(row.nic)}
+                      style={{ opacity: user?.role === 'admin' ? 1 : 0.5, cursor: user?.role === 'admin' ? 'pointer' : 'not-allowed' }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
+
+      {loadError && <p className="error-msg">{loadError}</p>}
+      {!loading && !loadError && data.length === 0 && (
+        <p className="no-data">No records found.</p>
+      )}
 
       {totalPages > 1 && (
         <div className="pagination">

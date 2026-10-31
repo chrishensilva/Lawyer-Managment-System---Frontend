@@ -3,6 +3,7 @@ import API_BASE_URL from "../../config";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
 import "./Form.css";
+import TableSkeleton from "../../components/shared/TableSkeleton";
 
 
 function AddEditor() {
@@ -10,6 +11,8 @@ function AddEditor() {
     const { toast, confirm } = useToast();
 
     const [editors, setEditors] = useState([]);
+    const [editorsLoading, setEditorsLoading] = useState(true);
+    const [editorsLoadError, setEditorsLoadError] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [permissions, setPermissions] = useState({
@@ -23,6 +26,8 @@ function AddEditor() {
     });
 
     const loadEditors = async () => {
+        setEditorsLoading(true);
+        setEditorsLoadError("");
         try {
             const res = await fetch(`${API_BASE_URL}/getEditors`, {
                 credentials: 'include',
@@ -30,16 +35,23 @@ function AddEditor() {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
+            if (!res.ok) {
+                throw new Error(`Failed to load editors (${res.status})`);
+            }
             const data = await res.json();
             if (Array.isArray(data)) {
                 setEditors(data);
             } else {
                 console.error("Expected array but got:", data);
                 setEditors([]);
+                setEditorsLoadError("Unable to load editor records.");
             }
         } catch (error) {
             console.error("Failed to fetch editors:", error);
             setEditors([]);
+            setEditorsLoadError("Unable to load editor records.");
+        } finally {
+            setEditorsLoading(false);
         }
     };
 
@@ -160,7 +172,7 @@ function AddEditor() {
 
             <div style={{ marginTop: '40px' }}>
                 <h2>Existing Editors</h2>
-                <table className="styled-table">
+                <table className="styled-table" aria-busy={editorsLoading}>
                     <thead>
                         <tr>
                             <th>Username</th>
@@ -169,7 +181,7 @@ function AddEditor() {
                         </tr>
                     </thead>
                     <tbody>
-                        {editors.map(ed => (
+                        {editorsLoading ? <TableSkeleton columns={3} /> : editors.map(ed => (
                             <tr key={ed.id}>
                                 <td>{ed.username}</td>
                                 <td>{(() => {
@@ -185,8 +197,14 @@ function AddEditor() {
                                 </td>
                             </tr>
                         ))}
+                        {!editorsLoading && !editorsLoadError && editors.length === 0 && (
+                            <tr>
+                                <td colSpan="3" className="no-data">No records found.</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
+                {editorsLoadError && <p className="error-msg">{editorsLoadError}</p>}
             </div>
         </div>
     );

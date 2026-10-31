@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import "./Table.css";
 import "./Report.css";
+import TableSkeleton from "../../components/shared/TableSkeleton";
 import API_BASE_URL from "../../config";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -154,7 +155,28 @@ function GenerateReport() {
             )}
 
             {loading ? (
-                <p className="no-data">Loading real-time data from database...</p>
+                <div className="table-container">
+                    <table className="styled-table" aria-busy="true">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Case Number</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Address</th>
+                                <th>Court Type</th>
+                                <th>Assigned Lawyer</th>
+                                <th>Status</th>
+                                <th>Last Court Date</th>
+                                <th>Next Court Date</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <TableSkeleton columns={11} />
+                        </tbody>
+                    </table>
+                </div>
             ) : (
                 <>
                     <div className="report-summary">

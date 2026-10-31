@@ -143,19 +143,6 @@ footer {
 /* Responsive container utility */
 .main-container {
   width: 100%;
-  padding: 1rem;
-}
-
-@media (min-width: 640px) {
-  .main-container {
-    padding: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .main-container {
-    padding: 2rem;
-  }
 }
 
 /* Responsive search form wrapper */

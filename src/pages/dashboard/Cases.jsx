@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import LoadingModal from "../../components/shared/LoadingModal";
+import TableSkeleton from "../../components/shared/TableSkeleton";
 import API_BASE_URL from "../../config";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
@@ -7,6 +8,8 @@ import { useToast } from "../../contexts/ToastContext";
 function Cases() {
   const [users, setUsers] = useState([]);
   const [lawyers, setLawyers] = useState([]);
+  const [casesLoading, setCasesLoading] = useState(true);
+  const [casesLoadError, setCasesLoadError] = useState("");
   const { user, hasPermission, logAction } = useAuth();
   const { toast, confirm } = useToast();
   const [loading, setLoading] = useState(false);
@@ -31,17 +34,31 @@ function Cases() {
 
   // Load users with cases
   const loadUsers = async () => {
+    setCasesLoading(true);
+    setCasesLoadError("");
+    try {
     const res = await fetch(`${API_BASE_URL}/getUserCases`, {
       credentials: 'include',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     });
+    if (!res.ok) {
+      throw new Error(`Failed to load cases (${res.status})`);
+    }
     const data = await res.json();
     if (Array.isArray(data)) {
       setUsers(data);
     } else {
       setUsers([]);
+      setCasesLoadError("Unable to load case records.");
+    }
+    } catch (err) {
+      console.error("Failed to load cases:", err);
+      setUsers([]);
+      setCasesLoadError("Unable to load case records.");
+    } finally {
+      setCasesLoading(false);
     }
   };
 
@@ -150,9 +167,9 @@ function Cases() {
       )}
 
       <div className="main-container fade-in">
-        <h2>Assign Lawyers to Cases</h2>
+        <h2 className="page-heading">Assign Lawyers to Cases</h2>
         <div className="table-container">
-          <table className="styled-table">
+          <table className="styled-table" aria-busy={casesLoading}>
             <thead>
               <tr>
                 <th>Name</th>
@@ -170,49 +187,53 @@ function Cases() {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(users) && users.map((u) => (
-                <tr key={u.nic} style={{ backgroundColor: getRowColor(u.status) }}>
-                  <td>{u.name}</td>
-                  <td>{u.nic}</td>
-                  <td>{u.email}</td>
-                  <td>{u.number}</td>
-                  <td>{u.address}</td>
-                  <td>{u.last_date}</td>
-                  <td>{u.next_date}</td>
-                  <td>{u.casetype}</td>
-                  <td>{u.lawyer1}</td>
-                  <td>
-                    <select
-                      value={u.status || "ongoing"}
-                      onChange={(e) => updateStatus(u.nic, e.target.value)}
-                      disabled={!hasPermission('cases')}
-                      style={{ backgroundColor: 'transparent', border: '1px solid #ccc', borderRadius: '4px' }}
-                    >
-                      <option value="ongoing">Ongoing</option>
-                      <option value="concluded">Concluded</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </td>
-                  <td>{u.note}</td>
-                  <td>
-                    <select
-                      defaultValue={u.assigned_lawyer || ""}
-                      onChange={(e) => assignLawyer(u.nic, e.target.value)}
-                      disabled={!hasPermission('assign')}
-                    >
-                      <option value="">Select</option>
-                      {Array.isArray(lawyers) && lawyers.map((l) => (
-                        <option key={l.nic} value={l.name}>
-                          {l.name}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                </tr>
-              ))}
+              {casesLoading ? <TableSkeleton columns={12} /> : Array.isArray(users) && users.map((u) => (
+                  <tr key={u.nic} style={{ backgroundColor: getRowColor(u.status) }}>
+                    <td>{u.name}</td>
+                    <td>{u.nic}</td>
+                    <td>{u.email}</td>
+                    <td>{u.number}</td>
+                    <td>{u.address}</td>
+                    <td>{u.last_date}</td>
+                    <td>{u.next_date}</td>
+                    <td>{u.casetype}</td>
+                    <td>{u.lawyer1}</td>
+                    <td>
+                      <select
+                        value={u.status || "ongoing"}
+                        onChange={(e) => updateStatus(u.nic, e.target.value)}
+                        disabled={!hasPermission('cases')}
+                        style={{ backgroundColor: 'transparent', border: '1px solid #ccc', borderRadius: '4px' }}
+                      >
+                        <option value="ongoing">Ongoing</option>
+                        <option value="concluded">Concluded</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </td>
+                    <td>{u.note}</td>
+                    <td>
+                      <select
+                        defaultValue={u.assigned_lawyer || ""}
+                        onChange={(e) => assignLawyer(u.nic, e.target.value)}
+                        disabled={!hasPermission('assign')}
+                      >
+                        <option value="">Select</option>
+                        {Array.isArray(lawyers) && lawyers.map((l) => (
+                          <option key={l.nic} value={l.name}>
+                            {l.name}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
+        {casesLoadError && <p className="error-msg">{casesLoadError}</p>}
+        {!casesLoading && !casesLoadError && users.length === 0 && (
+          <p className="no-data">No records found.</p>
+        )}
       </div>
     </>
   );

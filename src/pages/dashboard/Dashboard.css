@@ -82,6 +82,37 @@
   min-width: 0; /* prevents flex overflow */
 }
 
+.page-heading {
+  margin: 0 0 1rem;
+}
+
+.lawyers-header .page-heading {
+  margin: 0;
+}
+
+.lawyers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.lawyers-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lawyers-search .searchbar {
+  width: 280px;
+}
+
+.lawyers-search .btn1 {
+  width: auto;
+}
+
 /* --- Stat Cards Grid --- */
 .card-row {
   display: grid;
@@ -212,6 +243,17 @@
     padding: 1rem;
   }
 
+  .lawyers-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lawyers-search .searchbar {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
   .nav-title {
     font-size: 0.95rem;
   }
@@ -243,6 +285,10 @@
 @media (max-width: 480px) {
   .main-body {
     padding: 0.75rem;
+  }
+
+  .lawyers-search .btn1 {
+    width: auto;
   }
 
   .card-row {

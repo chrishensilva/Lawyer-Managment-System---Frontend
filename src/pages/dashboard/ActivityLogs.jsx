@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import API_BASE_URL from "../../config";
+import TableSkeleton from "../../components/shared/TableSkeleton";
 import "./Table.css";
 
 function ActivityLogs() {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState("");
 
     const loadLogs = async () => {
         setLoading(true);
+        setLoadError("");
         try {
             const res = await fetch(`${API_BASE_URL}/getActivityLogs`, {
                 credentials: 'include',
@@ -15,12 +18,19 @@ function ActivityLogs() {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
+            if (!res.ok) {
+                throw new Error(`Failed to load activity logs (${res.status})`);
+            }
             const data = await res.json();
             if (Array.isArray(data)) {
                 setLogs(data);
+            } else {
+                throw new Error("Invalid activity log data received");
             }
         } catch (err) {
             console.error(err);
+            setLogs([]);
+            setLoadError("Unable to load activity records.");
         } finally {
             setLoading(false);
         }
@@ -39,7 +49,7 @@ function ActivityLogs() {
                 </div>
 
                 <div className="table-container">
-                    <table className="styled-table">
+                    <table className="styled-table" aria-busy={loading}>
                         <thead>
                             <tr>
                                 <th>User</th>
@@ -49,7 +59,7 @@ function ActivityLogs() {
                             </tr>
                         </thead>
                         <tbody>
-                            {logs.map((log) => (
+                            {loading ? <TableSkeleton columns={4} /> : logs.map((log) => (
                                 <tr key={log.id}>
                                     <td style={{ fontWeight: 'bold', color: log.username === 'admin' ? '#007bff' : '#28a745', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                         <img
@@ -68,10 +78,10 @@ function ActivityLogs() {
                     </table>
                 </div>
 
-                {logs.length === 0 && !loading && (
-                    <p className="no-data">No activities recorded yet.</p>
+                {loadError && <p className="error-msg">{loadError}</p>}
+                {logs.length === 0 && !loading && !loadError && (
+                    <p className="no-data">No records found.</p>
                 )}
-                {loading && <p className="no-data">Loading logs...</p>}
             </div>
         </div>
     );
