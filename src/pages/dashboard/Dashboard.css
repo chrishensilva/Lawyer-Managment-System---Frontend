@@ -183,39 +183,75 @@
 /* --- Bottom Section (Chart + Todo) --- */
 .bottom-section {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1.5rem;
-  align-items: start;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  grid-template-areas:
+    "chart calendar"
+    "notes notes";
+  gap: 1rem;
+  align-items: stretch;
 }
 
 .chart-container {
-  min-height: 350px;
+  grid-area: chart;
+  display: flex;
   width: 100%;
-  min-width: 0; /* Important for Recharts in Grid/Flex */
+  min-width: 0;
 }
 
-.graph-box,
-.todo-box {
+.graph-box {
+  flex: 1;
+  height: auto;
+  min-height: 380px;
+  margin: 0;
   background: var(--bg-surface);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-  height: 400px;
+}
+
+.calendar-container {
+  grid-area: calendar;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  align-self: stretch;
+}
+
+.bottom-section .todo-box {
+  grid-area: notes;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.graph-box,
+.calendar-container,
+.bottom-section .todo-box {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
 }
 
 .graph-box:hover,
-.todo-box:hover {
+.calendar-container:hover,
+.bottom-section .todo-box:hover {
   box-shadow: var(--shadow-md);
 }
 
 .graph-box h3,
+.bottom-section .calendar-container h3,
 .todo-box h3 {
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-main);
   margin-bottom: 1rem;
+}
+
+.graph-box > div {
+  min-width: 0;
 }
 
 .graph-placeholder {
@@ -259,8 +295,9 @@
   }
 
   .card-row {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
+    margin-bottom: 1rem;
   }
 
   .dash-card h3 {
@@ -268,16 +305,23 @@
   }
 
   .bottom-section {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "chart"
+      "calendar"
+      "notes";
   }
 
-  .graph-box,
-  .todo-box {
-    height: 320px;
+  .graph-box {
+    min-height: 360px;
+  }
+
+  .calendar-container {
+    height: auto;
   }
 
   .chart-container {
-    min-height: 280px;
+    min-height: 0;
   }
 }
 
@@ -292,7 +336,6 @@
   }
 
   .card-row {
-    grid-template-columns: 1fr 1fr;
     gap: 0.5rem;
   }
 
@@ -310,9 +353,13 @@
   }
 
   .graph-box,
-  .todo-box {
-    height: auto;
-    min-height: 280px;
+  .calendar-container,
+  .bottom-section .todo-box {
+    padding: 1rem;
+  }
+
+  .graph-box {
+    min-height: 320px;
   }
 }
 

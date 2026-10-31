@@ -1,10 +1,7 @@
 .calendar-container {
-    padding: 20px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    flex: 1;
-    min-width: 350px;
+    min-width: 0;
+    width: 100%;
+    background: var(--bg-surface);
 }
 
 .custom-calendar {
@@ -29,14 +26,14 @@
 }
 
 .upcoming-list {
-    margin-top: 20px;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
 }
 
 .upcoming-list h4 {
-    margin-bottom: 10px;
-    color: #374151;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
     font-size: 0.95rem;
 }
 
@@ -47,9 +44,9 @@
 
 .upcoming-list li {
     font-size: 0.85rem;
-    padding: 6px 0;
-    border-bottom: 1px solid #f9fafb;
-    color: #4b5563;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--bg-main);
+    color: var(--text-secondary);
 }
 
 .upcoming-list li strong {
